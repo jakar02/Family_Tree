@@ -11,13 +11,4 @@ import java.util.UUID;
 public interface PersonRepository extends Neo4jRepository<Person, UUID> {
 
 
-    @Query("""
-    MATCH (p:Person)
-    WHERE NOT ()-[:HAS_CHILD]->(p)
-        WITH root, collect(DISTINCT child) AS children, head(collect(DISTINCT partner)) AS partner
-    RETURN root, children, partner
-    RETURN p
-""")
-    List<Person> findRootPersons();
-
 }

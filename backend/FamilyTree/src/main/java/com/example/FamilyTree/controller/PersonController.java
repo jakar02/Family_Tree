@@ -37,7 +37,6 @@ public class PersonController {
         return rootPersonsWithFamily;
     }
 
-
     @GetMapping("/{id}")
     public Optional<Person> getPerson(@PathVariable UUID id) {
         return personService.findPersonById(id);
@@ -56,5 +55,10 @@ public class PersonController {
     @PostMapping("/add-family-tree")
     public void addFamilyTree(@RequestBody Person rootPerson) {
         personService.createFamilyTree(rootPerson);
+    }
+
+    @PostMapping("/edit-family-tree")
+    public void editFamilyTree(@RequestBody Person rootPerson) {
+        personService.updateFamilyTree(rootPerson);
     }
 }

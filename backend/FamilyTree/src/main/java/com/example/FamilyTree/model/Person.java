@@ -7,6 +7,7 @@ import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,24 +19,28 @@ public class Person {
     @GeneratedValue
     private UUID id;  // Zmieniono z Long na UUID
 
-    @JsonProperty("firstName")
-    private String name;
+    @JsonProperty("name")
+    private String name = "";
 
-    @JsonProperty("lastName")
-    private String surname;
+    @JsonProperty("surname")
+    private String surname = "";
 
-    @Version
-    private Long version;
+//    @Version
+//    private Long version;
 
     @Relationship(type = "HAS_CHILD", direction = Relationship.Direction.OUTGOING)
     private List<Person> children = new ArrayList<>();
 
     @Relationship(type = "PARTNER")
-    private List<Person> partners = new ArrayList<>();
+    private Person partners;
 
     private boolean isRoot = false;
 
     private String treeName = "";
+
+    private int birthYear=0;
+
+    private int deathYear=0;
 
     public String getTreeName() {
         return treeName;
@@ -45,7 +50,6 @@ public class Person {
         this.treeName = treeName;
     }
 
-    // Gettery i settery
     public boolean isRoot() {
         return isRoot;
     }
@@ -54,7 +58,6 @@ public class Person {
         isRoot = root;
     }
 
-    // Gettery i settery
     public UUID getId() {
         return id;
     }
@@ -87,11 +90,27 @@ public class Person {
         this.children = children;
     }
 
-    public List<Person> getPartners() {
+    public Person getPartners() {
         return partners;
     }
 
-    public void setPartners(List<Person> partners) {
+    public void setPartners(Person partners) {
         this.partners = partners;
+    }
+
+    public int getBirthYear() {
+        return birthYear;
+    }
+
+    public void setBirthYear(int year) {
+        this.birthYear = year;
+    }
+
+    public int getDeathYear() {
+        return deathYear;
+    }
+
+    public void setDeathYear(int year) {
+        this.deathYear = year;
     }
 }

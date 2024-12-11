@@ -44,42 +44,26 @@ public class PersonService {
     public void addPartner(UUID personId, Person partner) {
         Optional<Person> person = personRepository.findById(personId);
         if (person.isPresent()) {
-            Person partnerSaved = personRepository.save(partner); // Zapisz partnera, jeśli to nowa osoba
-            person.get().getPartners().add(partnerSaved); // Dodaj do listy partnerów
-            personRepository.save(person.get()); // Zapisz główną osobę z nowym partnerem
+            Person partnerSaved = personRepository.save(partner);
+            person.get().setPartners(partnerSaved);
+            personRepository.save(person.get());
         }
     }
 
-    // Metoda do tworzenia całego drzewa genealogicznego
-    public Person createFamilyTree(Person rootPerson) {
-        // Zapisujemy założyciela (root) drzewa genealogicznego
+    public void createFamilyTree(Person rootPerson) {
         rootPerson.setRoot(true);
         Person savedRootPerson = personRepository.save(rootPerson);
-
-        // Zapisujemy partnerów i dzieci założyciela
-        savePartnersAndChildren(savedRootPerson);
-
-        return savedRootPerson;
     }
 
-    // Metoda do zapisania partnerów i dzieci
-    private void savePartnersAndChildren(Person person) {
-        // Zapisujemy partnerów
-        for (Person partner : person.getPartners()) {
-            personRepository.save(partner);
-        }
-
-        // Zapisujemy dzieci
-        for (Person child : person.getChildren()) {
-            personRepository.save(child);
-        }
-
-        // Rekursywnie zapisujemy partnerów i dzieci dla każdego z nich
-        for (Person partner : person.getPartners()) {
-            savePartnersAndChildren(partner);
-        }
-        for (Person child : person.getChildren()) {
-            savePartnersAndChildren(child);
-        }
+    public void updateFamilyTree(Person rootPerson) {
+        Person existingPerson = personRepository.findById(rootPerson.getId())
+                .orElseThrow(() -> new RuntimeException("Person not found"));
+        existingPerson.setName(rootPerson.getName());
+        existingPerson.setSurname(rootPerson.getSurname());
+        existingPerson.setPartners(rootPerson.getPartners());
+        existingPerson.setChildren(rootPerson.getChildren());
+        existingPerson.setBirthYear(rootPerson.getBirthYear());
+        existingPerson.setDeathYear(rootPerson.getDeathYear());
+        personRepository.save(existingPerson);
     }
 }
