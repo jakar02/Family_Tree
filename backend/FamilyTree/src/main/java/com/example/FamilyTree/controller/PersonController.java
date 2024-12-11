@@ -11,8 +11,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/persons")
-@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "http://localhost:5173")
 public class PersonController {
+
+    @RequestMapping(value = "/{path:^(?!api).*$}")
+    public String serveFrontend() {
+        return "forward:/index.html";
+    }
 
     private final PersonService personService;
 
